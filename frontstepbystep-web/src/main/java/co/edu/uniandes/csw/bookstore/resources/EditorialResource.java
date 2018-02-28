@@ -28,15 +28,24 @@ import co.edu.uniandes.csw.bookstore.dtos.EditorialDetailDTO;
 import co.edu.uniandes.csw.bookstore.entities.EditorialEntity;
 import co.edu.uniandes.csw.bookstore.exceptions.BusinessLogicException;
 import co.edu.uniandes.csw.bookstore.mappers.BusinessLogicExceptionMapper;
+import co.edu.uniandes.csw.bookstore.mappers.WebApplicationExceptionMapper;
 import co.edu.uniandes.csw.bookstore.persistence.EditorialPersistence;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 
 /**
  * <pre>Clase que implementa el recurso "editorials".
@@ -95,4 +104,122 @@ public class EditorialResource {
         // Como debe retornar un DTO (json) se invoca el constructor del DTO con argumento el entity nuevo
         return new EditorialDetailDTO(nuevoEditorial);
     }
+
+    /**
+     * <h1>GET /api/editorials : Obtener todas las editoriales.</h1>
+     * 
+     * <pre>Busca y devuelve todas las editoriales que existen en la aplicacion.
+     * 
+     * Codigos de respuesta:
+     * <code style="color: mediumseagreen; background-color: #eaffe0;">
+     * 200 OK Devuelve todas las editoriales de la aplicacion.</code> 
+     * </pre>
+     * @return JSONArray {@link EditorialDetailDTO} - Las editoriales encontradas en la aplicación. Si no hay ninguna retorna una lista vacía.
+     */
+    @GET
+    public List<EditorialDetailDTO> getEditorials() {
+        return listEntity2DetailDTO(editorialLogic.getEditorials());
+    }
+
+     /**
+     * <h1>GET /api/editorials/{id} : Obtener editorial por id.</h1>
+     * 
+     * <pre>Busca la editorial con el id asociado recibido en la URL y la devuelve.
+     * 
+     * Codigos de respuesta:
+     * <code style="color: mediumseagreen; background-color: #eaffe0;">
+     * 200 OK Devuelve la editorial correspondiente al id.
+     * </code> 
+     * <code style="color: #c7254e; background-color: #f9f2f4;">
+     * 404 Not Found No existe una editorial con el id dado.
+     * </code> 
+     * </pre>
+     * @param id Identificador de la editorial que se esta buscando. Este debe ser una cadena de dígitos.
+     * @return JSON {@link EditorialDetailDTO} - La editorial buscada
+     * @throws WebApplicationException {@link WebApplicationExceptionMapper} - Error de lógica que se genera cuando no se encuentra la editorial.
+     */
+    @GET
+    @Path("{id: \\d+}")
+    public EditorialDetailDTO getEditorial(@PathParam("id") Long id) throws WebApplicationException {
+        EditorialEntity entity = editorialLogic.getEditorial(id);
+        if (entity == null) {
+            throw new WebApplicationException("El recurso /editorials/" + id + " no existe.", 404);
+        }
+        return new EditorialDetailDTO(editorialLogic.getEditorial(id));
+    }
+
+    /**
+     * <h1>PUT /api/editorials/{id} : Actualizar editorial con el id dado.</h1>
+     * <pre>Cuerpo de petición: JSON {@link EditorialDetailDTO}.
+     * 
+     * Actualiza la editorial con el id recibido en la URL con la informacion que se recibe en el cuerpo de la petición.
+     * 
+     * Codigos de respuesta:
+     * <code style="color: mediumseagreen; background-color: #eaffe0;">
+     * 200 OK Actualiza la editorial con el id dado con la información enviada como parámetro. Retorna un objeto identico.</code> 
+     * <code style="color: #c7254e; background-color: #f9f2f4;">
+     * 404 Not Found. No existe una editorial con el id dado.
+     * </code> 
+     * </pre>
+     * @param id Identificador de la editorial que se desea actualizar. Este debe ser una cadena de dígitos.
+     * @param editorial {@link EditorialDetailDTO} La editorial que se desea guardar.
+     * @return JSON {@link EditorialDetailDTO} - La editorial guardada.
+     * @throws WebApplicationException {@link WebApplicationExceptionMapper} - Error de lógica que se genera cuando no se encuentra la editorial a actualizar.
+     */
+    @PUT
+    @Path("{id: \\d+}")
+    public EditorialDetailDTO updateEditorial(@PathParam("id") Long id, EditorialDetailDTO editorial) throws WebApplicationException {
+        editorial.setId(id);
+        EditorialEntity entity = editorialLogic.getEditorial(id);
+        if (entity == null) {
+            throw new WebApplicationException("El recurso /editorials/" + id + " no existe.", 404);
+        }
+        return new EditorialDetailDTO(editorialLogic.updateEditorial(id, editorial.toEntity()));
+    }
+
+    /**
+     * <h1>DELETE /api/editorials/{id} : Borrar editorial por id.</h1>
+     * 
+     * <pre>Borra la editorial con el id asociado recibido en la URL.
+     * 
+     * Códigos de respuesta:<br>
+     * <code style="color: mediumseagreen; background-color: #eaffe0;">
+     * 200 OK Elimina la editorial correspondiente al id dado.</code>
+     * <code style="color: #c7254e; background-color: #f9f2f4;">
+     * 404 Not Found. No existe una editorial con el id dado.
+     * </code>
+     * </pre>
+     * @param id Identificador de la editorial que se desea borrar. Este debe ser una cadena de dígitos.
+     * @throws BusinessLogicException {@link BusinessLogicExceptionMapper} - Error de lógica que se genera cuando no se puede eliminar la editorial.
+     */
+    @DELETE
+    @Path("{id: \\d+}")
+    public void deleteEditorial(@PathParam("id") Long id) throws BusinessLogicException {
+        LOGGER.log(Level.INFO, "Inicia proceso de borrar una editorial con id {0}", id);
+        EditorialEntity entity = editorialLogic.getEditorial(id);
+        if (entity == null) {
+            throw new WebApplicationException("El recurso /editorials/" + id + " no existe.", 404);
+        }
+        editorialLogic.deleteEditorial(id);
+    }
+
+    /**
+     *
+     * lista de entidades a DTO.
+     *
+     * Este método convierte una lista de objetos EditorialEntity a una lista de
+     * objetos EditorialDetailDTO (json)
+     *
+     * @param entityList corresponde a la lista de editoriales de tipo Entity
+     * que vamos a convertir a DTO.
+     * @return la lista de editoriales en forma DTO (json)
+     */
+    private List<EditorialDetailDTO> listEntity2DetailDTO(List<EditorialEntity> entityList) {
+        List<EditorialDetailDTO> list = new ArrayList<>();
+        for (EditorialEntity entity : entityList) {
+            list.add(new EditorialDetailDTO(entity));
+        }
+        return list;
+    }
+
 }

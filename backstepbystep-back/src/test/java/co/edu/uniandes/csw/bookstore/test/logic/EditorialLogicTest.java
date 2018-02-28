@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package co.edu.uniandes.csw.bookstore.test.logic;
 
 import co.edu.uniandes.csw.bookstore.ejb.EditorialLogic;
@@ -46,30 +46,24 @@ import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
 /**
- * 
+ *
  * @author ISIS2603
  */
 @RunWith(Arquillian.class)
 public class EditorialLogicTest {
 
-
     private PodamFactory factory = new PodamFactoryImpl();
 
- 
     @Inject
     private EditorialLogic editorialLogic;
 
-   
     @PersistenceContext
     private EntityManager em;
 
- 
     @Inject
     private UserTransaction utx;
 
-  
     private List<EditorialEntity> data = new ArrayList<EditorialEntity>();
-
 
     @Deployment
     public static JavaArchive createDeployment() {
@@ -138,6 +132,69 @@ public class EditorialLogicTest {
         EditorialEntity entity = em.find(EditorialEntity.class, result.getId());
         Assert.assertEquals(newEntity.getId(), entity.getId());
         Assert.assertEquals(newEntity.getName(), entity.getName());
+    }
+
+    /**
+     * Prueba para consultar la lista de Editorials
+     *
+     */
+    @Test
+    public void getEditorialsTest() {
+        List<EditorialEntity> list = editorialLogic.getEditorials();
+        Assert.assertEquals(data.size(), list.size());
+        for (EditorialEntity entity : list) {
+            boolean found = false;
+            for (EditorialEntity storedEntity : data) {
+                if (entity.getId().equals(storedEntity.getId())) {
+                    found = true;
+                }
+            }
+            Assert.assertTrue(found);
+        }
+    }
+
+    /**
+     * Prueba para consultar un Editorial
+     *
+     */
+    @Test
+    public void getEditorialTest() {
+        EditorialEntity entity = data.get(0);
+        EditorialEntity resultEntity = editorialLogic.getEditorial(entity.getId());
+        Assert.assertNotNull(resultEntity);
+        Assert.assertEquals(entity.getId(), resultEntity.getId());
+        Assert.assertEquals(entity.getName(), resultEntity.getName());
+    }
+
+    /**
+     * Prueba para eliminar un Editorial
+     *
+     */
+    @Test
+    public void deleteEditorialTest() {
+        EditorialEntity entity = data.get(0);
+        editorialLogic.deleteEditorial(entity.getId());
+        EditorialEntity deleted = em.find(EditorialEntity.class, entity.getId());
+        Assert.assertNull(deleted);
+    }
+
+    /**
+     * Prueba para actualizar un Editorial
+     *
+     */
+    @Test
+    public void updateEditorialTest() {
+        EditorialEntity entity = data.get(0);
+        EditorialEntity pojoEntity = factory.manufacturePojo(EditorialEntity.class);
+
+        pojoEntity.setId(entity.getId());
+
+        editorialLogic.updateEditorial(pojoEntity.getId(), pojoEntity);
+
+        EditorialEntity resp = em.find(EditorialEntity.class, entity.getId());
+
+        Assert.assertEquals(pojoEntity.getId(), resp.getId());
+        Assert.assertEquals(pojoEntity.getName(), resp.getName());
     }
 
 }

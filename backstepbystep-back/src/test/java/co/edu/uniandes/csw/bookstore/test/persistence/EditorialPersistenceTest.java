@@ -159,5 +159,72 @@ public class EditorialPersistenceTest {
 
         Assert.assertEquals(newEntity.getName(), entity.getName());
     }
+    
+        /**
+     * Prueba para consultar la lista de Editorials.
+     *
+     * 
+     */
+    @Test
+    public void getEditorialsTest() {
+        List<EditorialEntity> list = editorialPersistence.findAll();
+        Assert.assertEquals(data.size(), list.size());
+        for (EditorialEntity ent : list) {
+            boolean found = false;
+            for (EditorialEntity entity : data) {
+                if (ent.getId().equals(entity.getId())) {
+                    found = true;
+                }
+            }
+            Assert.assertTrue(found);
+        }
+    }
+
+    /**
+     * Prueba para consultar un Editorial.
+     *
+     * 
+     */
+    @Test
+    public void getEditorialTest() {
+        EditorialEntity entity = data.get(0);
+        EditorialEntity newEntity = editorialPersistence.find(entity.getId());
+        Assert.assertNotNull(newEntity);
+        Assert.assertEquals(entity.getName(), newEntity.getName());
+    }
+
+    /**
+     * Prueba para eliminar un Editorial.
+     *
+     * 
+     */
+    @Test
+    public void deleteEditorialTest() {
+        EditorialEntity entity = data.get(0);
+        editorialPersistence.delete(entity.getId());
+        EditorialEntity deleted = em.find(EditorialEntity.class, entity.getId());
+        Assert.assertNull(deleted);
+    }
+
+    /**
+     * Prueba para actualizar un Editorial.
+     *
+     * 
+     */
+    @Test
+    public void updateEditorialTest() {
+        EditorialEntity entity = data.get(0);
+        PodamFactory factory = new PodamFactoryImpl();
+        EditorialEntity newEntity = factory.manufacturePojo(EditorialEntity.class);
+
+        newEntity.setId(entity.getId());
+
+        editorialPersistence.update(newEntity);
+
+        EditorialEntity resp = em.find(EditorialEntity.class, entity.getId());
+
+        Assert.assertEquals(newEntity.getName(), resp.getName());
+    }
+
 
 }

@@ -63,23 +63,23 @@ public class BookStoreIT {
                 .setWebXML(new File("src/main/webapp/WEB-INF/web.xml"));
 
     }
-    
+
     @Test
     @RunAsClient
     public void postman() throws IOException {
-        
+
         PostmanTestBuilder tp = new PostmanTestBuilder();
-        tp.setTestWithoutLogin("backstepbystep-paso1.postman_collection");
+        tp.setTestWithoutLogin("backstepbystep-paso2.postman_collection");
         String desiredResult = "0";
         if (tp.getAssertions_failed() != null) {
             Assert.assertEquals(desiredResult, tp.getAssertions_failed());
-        }
+            }
         if (tp.getIterations_failed() != null) {
             Assert.assertEquals(desiredResult, tp.getIterations_failed());
         }
         if (tp.getPrerequest_scripts_failed() != null) {
             Assert.assertEquals(desiredResult, tp.getPrerequest_scripts_failed());
-        }
+    }
         if (tp.getRequests_failed() != null) {
             Assert.assertEquals(desiredResult, tp.getRequests_failed());
         }
@@ -87,6 +87,6 @@ public class BookStoreIT {
             Assert.assertEquals(desiredResult, tp.getTest_scripts_failed());
         }
 
-    }
+}
 
 }
