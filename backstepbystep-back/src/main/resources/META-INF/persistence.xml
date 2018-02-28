@@ -5,6 +5,7 @@
     <jta-data-source>java:app/jdbc/bookstore</jta-data-source>
     <class>co.edu.uniandes.csw.bookstore.entities.EditorialEntity</class>
     <class>co.edu.uniandes.csw.bookstore.entities.BookEntity</class>
+    <class>co.edu.uniandes.csw.bookstore.entities.ReviewEntity</class>
     <properties>
       <property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>

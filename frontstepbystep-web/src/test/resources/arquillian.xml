@@ -36,7 +36,7 @@ SOFTWARE.
     <container qualifier="glassfish-embedded"
                default="true">
         <configuration>
-            <property name="bindHttpPort">8080</property>
+            <property name="bindHttpPort">8080</property> // puerto coincide con el de las colecciones postman
         </configuration>
     </container>
 </arquillian>

@@ -70,7 +70,7 @@ public abstract class BaseEntity implements Serializable {
         }
         if (obj == null) {
             return false;
-        }
+    }
         if (getClass() != obj.getClass()) {
             return false;
         }

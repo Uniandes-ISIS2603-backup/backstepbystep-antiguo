@@ -79,7 +79,7 @@ public class EditorialDetailDTO extends EditorialDTO {
 
     /*
     * Esta lista de tipo BookDTO contiene los books que estan asociados a una editorial
-    */
+     */
     private List<BookDTO> books;
 
     /**
@@ -96,11 +96,12 @@ public class EditorialDetailDTO extends EditorialDTO {
     public EditorialDetailDTO(EditorialEntity entity) {
         super(entity);
         if (entity != null) {
-            books = new ArrayList();
-            for (BookEntity entityBook : entity.getBooks()) {
-                books.add(new BookDTO(entityBook));
+            if (entity.getBooks() != null) {
+                books = new ArrayList<>();
+                for (BookEntity entityBook : entity.getBooks()) {
+                    books.add(new BookDTO(entityBook));
+                }
             }
-
         }
     }
 
@@ -113,7 +114,7 @@ public class EditorialDetailDTO extends EditorialDTO {
     public EditorialEntity toEntity() {
         EditorialEntity editorialE = super.toEntity();
         if (books != null) {
-            List<BookEntity> booksEntity = new ArrayList();
+            List<BookEntity> booksEntity = new ArrayList<>();
             for (BookDTO dtoBook : books) {
                 booksEntity.add(dtoBook.toEntity());
             }

@@ -115,10 +115,7 @@ public class BookLogic {
     }
 
     private boolean validateISBN(String isbn) {
-        if (isbn == null || isbn.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !(isbn == null || isbn.isEmpty());
     }
 
 }

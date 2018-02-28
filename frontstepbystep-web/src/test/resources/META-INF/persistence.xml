@@ -4,6 +4,7 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>co.edu.uniandes.csw.bookstore.entities.EditorialEntity</class>
     <class>co.edu.uniandes.csw.bookstore.entities.BookEntity</class>
+    <class>co.edu.uniandes.csw.bookstore.entities.ReviewEntity</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>

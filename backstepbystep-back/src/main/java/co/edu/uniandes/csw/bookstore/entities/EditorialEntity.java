@@ -29,7 +29,6 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import uk.co.jemos.podam.common.PodamExclude;
-
 /**
  * Clase que representa una editorial en la persistencia y permite su serialización.
  * @author ISIS2603
@@ -41,10 +40,18 @@ public class EditorialEntity extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "editorial")
     private List<BookEntity> books = new ArrayList<BookEntity>();
 
+    /**
+     * Devuelve los libros de la editorial.
+     * @return Lista de entidades de Libro.
+     */
     public List<BookEntity> getBooks() {
         return books;
     }
 
+    /**
+     * Modifica los libros de la editorial.
+     * @param books Los nuevos libros.
+     */
     public void setBooks(List<BookEntity> books) {
         this.books = books;
     }

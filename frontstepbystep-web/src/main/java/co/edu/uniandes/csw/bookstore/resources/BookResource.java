@@ -109,7 +109,7 @@ public class BookResource {
     public BookDetailDTO getBook(@PathParam("id") Long id) {
         BookEntity entity = bookLogic.getBook(id);
         if (entity == null) {
-            throw new WebApplicationException("El recurso /books/" + id + " no existe.",404);
+            throw new WebApplicationException("El recurso /books/" + id + " no existe.", 404);
         }
         return new BookDetailDTO(entity);
     }
@@ -168,7 +168,7 @@ public class BookResource {
         book.setId(id);
         BookEntity entity = bookLogic.getBook(id);
         if (entity == null) {
-           throw new WebApplicationException("El recurso /books/" + id + " no existe.",404);
+            throw new WebApplicationException("El recurso /books/" + id + " no existe.", 404);
         }
         return new BookDetailDTO(bookLogic.updateBook(id, book.toEntity()));
     }
@@ -193,13 +193,32 @@ public class BookResource {
     public void deleteBook(@PathParam("id") Long id) throws BusinessLogicException {
         BookEntity entity = bookLogic.getBook(id);
         if (entity == null) {
-            throw new WebApplicationException("El recurso /books/" + id + " no existe.",404);
+            throw new WebApplicationException("El recurso /books/" + id + " no existe.", 404);
         }
         bookLogic.deleteBook(id);
     }
 
+    /**
+     * Conexión con el servicio de reseñas para un libro. {@link ReviewResource}
+     * 
+     * Este método conecta la ruta de /books con las rutas de /reviews que dependen
+     * del libro, es una redirección al servicio que maneja el segmento de la 
+     * URL que se encarga de las reseñas.
+     * 
+     * @param booksId El ID del libro con respecto al cual se accede al servicio.
+     * @return El servicio de Reseñas para ese libro en paricular.
+     */
+    @Path("{idBook: \\d+}/reviews")
+    public Class<ReviewResource> getReviewResource(@PathParam("idBook") Long booksId) {
+        BookEntity entity = bookLogic.getBook(booksId);
+        if (entity == null) {
+            throw new WebApplicationException("El recurso /books/" + booksId + "/reviews no existe.", 404);
+        }
+        return ReviewResource.class;
+    }
+
     private List<BookDetailDTO> listBookEntity2DetailDTO(List<BookEntity> entityList) {
-        List<BookDetailDTO> list = new ArrayList();
+        List<BookDetailDTO> list = new ArrayList<BookDetailDTO>();
         for (BookEntity entity : entityList) {
             list.add(new BookDetailDTO(entity));
         }

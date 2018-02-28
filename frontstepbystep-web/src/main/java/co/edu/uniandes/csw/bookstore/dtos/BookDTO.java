@@ -28,7 +28,7 @@ import co.edu.uniandes.csw.bookstore.entities.BookEntity;
 import java.util.Date;
 
 /**
- * BookDTO Objeto de transferencia de datos de Editoriales. Los DTO contienen las
+ * BookDTO Objeto de transferencia de datos de Libros. Los DTO contienen las
  * represnetaciones de los JSON que se transfieren entre el cliente y el
  * servidor.
  *
@@ -43,7 +43,7 @@ import java.util.Date;
  *      "publishingdate": date
  *   }
  * </pre>
- * Por ejemplo una editorial se representa asi:<br>
+ * Por ejemplo un libro se representa asi:<br>
  * 
  * <pre>
  * 
@@ -68,7 +68,6 @@ public class BookDTO {
     private String description;
     private Date publishingdate;
 
-
     /**
      * Constructor por defecto
      */
@@ -87,7 +86,6 @@ public class BookDTO {
             this.image = bookE.getImage();
             this.description = bookE.getDescription();
             this.publishingdate = bookE.getPublishDate();
-           
         }
     }
 
@@ -104,7 +102,7 @@ public class BookDTO {
         bookE.setImage(this.image);
         bookE.setDescription(this.description);
         bookE.setPublishDate(this.publishingdate);
-       
+
         return bookE;
     }
 

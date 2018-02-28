@@ -142,7 +142,7 @@ public class EditorialPersistence {
         query = query.setParameter("name", name);
         // Se invoca el query se obtiene la lista resultado
         List<EditorialEntity> sameName = query.getResultList();
-        EditorialEntity result; 
+        EditorialEntity result = null; 
         if (sameName == null ) {
             result = null;
         } else if (sameName.isEmpty()) {
@@ -152,5 +152,6 @@ public class EditorialPersistence {
         }
         return result;
     }
+
 
 }

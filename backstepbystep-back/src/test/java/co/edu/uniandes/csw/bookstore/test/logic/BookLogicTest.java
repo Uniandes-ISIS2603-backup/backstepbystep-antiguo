@@ -20,7 +20,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package co.edu.uniandes.csw.bookstore.test.logic;
 
 import co.edu.uniandes.csw.bookstore.ejb.BookLogic;
@@ -46,10 +46,8 @@ import org.junit.runner.RunWith;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-
-
 /**
- * 
+ *
  * @author ISIS2603
  */
 @RunWith(Arquillian.class)
@@ -60,19 +58,15 @@ public class BookLogicTest {
     @Inject
     private BookLogic bookLogic;
 
-
     @PersistenceContext
     private EntityManager em;
-
 
     @Inject
     private UserTransaction utx;
 
-
     private List<BookEntity> data = new ArrayList<BookEntity>();
 
     private List<EditorialEntity> editorialData = new ArrayList();
-
 
     @Deployment
     public static JavaArchive createDeployment() {
@@ -87,7 +81,7 @@ public class BookLogicTest {
     /**
      * Configuración inicial de la prueba.
      *
-     * 
+     *
      */
     @Before
     public void configTest() {
@@ -109,7 +103,7 @@ public class BookLogicTest {
     /**
      * Limpia las tablas que están implicadas en la prueba.
      *
-     * 
+     *
      */
     private void clearData() {
         em.createQuery("delete from BookEntity").executeUpdate();
@@ -117,31 +111,33 @@ public class BookLogicTest {
     }
 
     /**
-     * Inserta los datos iniciales para el correcto funcionamiento de las pruebas.
+     * Inserta los datos iniciales para el correcto funcionamiento de las
+     * pruebas.
      *
-     * 
+     *
      */
     private void insertData() {
-            for (int i = 0; i < 3; i++) {
-                EditorialEntity editorial = factory.manufacturePojo(EditorialEntity.class);
-                em.persist(editorial);
-                editorialData.add(editorial);
-            }
+        for (int i = 0; i < 3; i++) {
+            EditorialEntity editorial = factory.manufacturePojo(EditorialEntity.class);
+            em.persist(editorial);
+            editorialData.add(editorial);
+        }
         for (int i = 0; i < 3; i++) {
             BookEntity entity = factory.manufacturePojo(BookEntity.class);
-                entity.setEditorial(editorialData.get(0));
+            entity.setEditorial(editorialData.get(0));
 
             em.persist(entity);
             data.add(entity);
         }
     }
+
     /**
      * Prueba para crear un Book
      *
-     * 
+     *
      */
     @Test
-    public void createBookTest() throws BusinessLogicException  {
+    public void createBookTest() throws BusinessLogicException {
         BookEntity newEntity = factory.manufacturePojo(BookEntity.class);
         BookEntity result = bookLogic.createBook(newEntity);
         Assert.assertNotNull(result);
@@ -156,7 +152,7 @@ public class BookLogicTest {
     /**
      * Prueba para consultar la lista de Books
      *
-     * 
+     *
      */
     @Test
     public void getBooksTest() {
@@ -173,11 +169,10 @@ public class BookLogicTest {
         }
     }
 
-    
     /**
      * Prueba para consultar un Book
      *
-     * 
+     *
      */
     @Test
     public void getBookTest() {
@@ -194,7 +189,7 @@ public class BookLogicTest {
     /**
      * Prueba para eliminar un Book
      *
-     * 
+     *
      */
     @Test
     public void deleteBookTest() {
@@ -207,7 +202,7 @@ public class BookLogicTest {
     /**
      * Prueba para actualizar un Book
      *
-     * 
+     *
      */
     @Test
     public void updateBookTest() throws BusinessLogicException {
@@ -216,7 +211,7 @@ public class BookLogicTest {
 
         pojoEntity.setId(entity.getId());
 
-        bookLogic.updateBook(pojoEntity.getId(),pojoEntity);
+        bookLogic.updateBook(pojoEntity.getId(), pojoEntity);
 
         BookEntity resp = em.find(BookEntity.class, entity.getId());
 
@@ -227,4 +222,3 @@ public class BookLogicTest {
         Assert.assertEquals(pojoEntity.getImage(), resp.getImage());
     }
 }
-

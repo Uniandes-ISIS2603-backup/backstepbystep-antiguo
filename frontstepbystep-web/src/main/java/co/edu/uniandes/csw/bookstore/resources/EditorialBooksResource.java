@@ -57,6 +57,7 @@ import java.util.ArrayList;
  * @author ISIS2603
  * @version 1.0
  */
+@Path("editorials/{editorialsId: \\d+}/books")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class EditorialBooksResource {
@@ -69,10 +70,10 @@ public class EditorialBooksResource {
      *
      * @param entityList Lista de BookEntity a convertir.
      * @return Lista de BookDetailDTO convertida.
-     *
+     * 
      */
     private List<BookDetailDTO> booksListEntity2DTO(List<BookEntity> entityList) {
-        List<BookDetailDTO> list = new ArrayList();
+        List<BookDetailDTO> list = new ArrayList<BookDetailDTO>();
         for (BookEntity entity : entityList) {
             list.add(new BookDetailDTO(entity));
         }
@@ -84,10 +85,10 @@ public class EditorialBooksResource {
      *
      * @param dtos Lista de BookDetailDTO a convertir.
      * @return Lista de BookEntity convertida.
-     *
+     * 
      */
     private List<BookEntity> booksListDTO2Entity(List<BookDetailDTO> dtos) {
-        List<BookEntity> list = new ArrayList();
+        List<BookEntity> list = new ArrayList<>();
         for (BookDetailDTO dto : dtos) {
             list.add(dto.toEntity());
         }
@@ -115,7 +116,7 @@ public class EditorialBooksResource {
      * <h1>GET /api/editorials/{editorialsId}/books/{booksId} : Obtener libro por id de la editorial por id.</h1>
      *
      * <pre>Busca el libro con el id asociado dentro de la editorial con id asociado.
-     *
+     * 
      * Codigos de respuesta:
      * <code style="color: mediumseagreen; background-color: #eaffe0;">
      * 200 OK Devuelve el libro correspondiente al id.
@@ -153,7 +154,7 @@ public class EditorialBooksResource {
     @POST
     @Path("{booksId: \\d+}")
     public BookDetailDTO addBooks(@PathParam("editorialsId") Long editorialsId, @PathParam("booksId") Long booksId) {
-        return new BookDetailDTO(editorialLogic.addBook(booksId, editorialsId));
+        return new BookDetailDTO(editorialLogic.addBook(booksId,editorialsId));
     }
 
     /**
@@ -192,6 +193,6 @@ public class EditorialBooksResource {
     @DELETE
     @Path("{booksId: \\d+}")
     public void removeBooks(@PathParam("editorialsId") Long editorialsId, @PathParam("booksId") Long booksId) {
-        editorialLogic.removeBook(booksId, editorialsId);
+        editorialLogic.removeBook(booksId,editorialsId);
     }
 }
