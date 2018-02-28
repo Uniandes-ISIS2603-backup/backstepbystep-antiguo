@@ -136,8 +136,8 @@ public class BookResource {
      * @throws BusinessLogicException {@link BusinessLogicExceptionMapper} - Error de lógica que se genera cuando ya existe el libro.
      */
     @POST
-    public BookDetailDTO createBook(BookDetailDTO book) throws BusinessLogicException {
-        return new BookDetailDTO(bookLogic.createBook(book.toEntity()));
+    public BookDetailDTO createBook(BookDetailDTO book) throws BusinessLogicException {        
+         return new BookDetailDTO(bookLogic.createBook(book.toEntity()));
     }
 
     /**
@@ -156,9 +156,9 @@ public class BookResource {
      * 412 Precondition Failes. No se puede actualizar el libro con el id dado.
      * </code> 
      * </pre>
-     * @param id Identificador de la editorial que se desea actualizar. Este debe ser una cadena de dígitos.
+     * @param id Identificador del libro que se desea actualizar. Este debe ser una cadena de dígitos.
      * @param book {@link BookDetailDTO} El libro que se desea guardar.
-     * @return JSON {@link BookDetailDTO} - El libro guardada.
+     * @return JSON {@link BookDetailDTO} - El libro guardado.
      * @throws WebApplicationException {@link WebApplicationExceptionMapper} - Error de lógica que se genera cuando no se encuentra el libro a actualizar.
      * @throws BusinessLogicException {@link BusinessLogicExceptionMapper} - Error de lógica que se genera cuando no se puede actualizar el libro.
      */
@@ -217,8 +217,27 @@ public class BookResource {
         return ReviewResource.class;
     }
 
+    /**
+     * Conexión con el servicio de autores para un libro. {@link BookAuthorsResource}
+     * 
+     * Este método conecta la ruta de /books con las rutas de /authors que dependen
+     * del libro, es una redirección al servicio que maneja el segmento de la 
+     * URL que se encarga de los Autores.
+     * 
+     * @param booksId El ID del libro con respecto al cual se accede al servicio.
+     * @return El servicio de Autores para ese libro en paricular.
+     */
+    @Path("{booksId: \\d+}/authors")
+    public Class<BookAuthorsResource> getBookAuthorsResource(@PathParam("booksId") Long booksId) {
+        BookEntity entity = bookLogic.getBook(booksId);
+        if (entity == null) {
+            throw new WebApplicationException("El recurso /books/" + booksId + "/reviews no existe.", 404);
+        }
+        return BookAuthorsResource.class;
+    }
+
     private List<BookDetailDTO> listBookEntity2DetailDTO(List<BookEntity> entityList) {
-        List<BookDetailDTO> list = new ArrayList<BookDetailDTO>();
+        List<BookDetailDTO> list = new ArrayList<>();
         for (BookEntity entity : entityList) {
             list.add(new BookDetailDTO(entity));
         }

@@ -235,7 +235,7 @@ public class EditorialResource {
      * @return la lista de editoriales en forma DTO (json)
      */
     private List<EditorialDetailDTO> listEntity2DetailDTO(List<EditorialEntity> entityList) {
-        List<EditorialDetailDTO> list = new ArrayList<EditorialDetailDTO>();
+        List<EditorialDetailDTO> list = new ArrayList<>();
         for (EditorialEntity entity : entityList) {
             list.add(new EditorialDetailDTO(entity));
         }

@@ -20,9 +20,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
+ */
 package co.edu.uniandes.csw.bookstore.entities;
-
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -48,15 +48,18 @@ public class BookEntity extends BaseEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date publishDate;
     private String description;
-
+    
     @PodamExclude
     @ManyToOne
     private EditorialEntity editorial;
-    
+
     @PodamExclude
     @OneToMany(mappedBy = "book", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<ReviewEntity> reviews = new ArrayList<ReviewEntity>();
-  
+
+    @PodamExclude
+    @ManyToMany
+    private List<AuthorEntity> authors = new ArrayList<AuthorEntity>();
 
     /**
      * Devuelve el ISBN del libro.
@@ -154,5 +157,20 @@ public class BookEntity extends BaseEntity implements Serializable {
         this.reviews = reviews;
     }
 
-}
+    /**
+     * Devuelve los autores de un libro
+     * @return the authors
+     */
+    public List<AuthorEntity> getAuthors() {
+        return authors;
+    }
 
+    /**
+     * Modifica los autores de un libro
+     * @param authors the authors to set
+     */
+    public void setAuthors(List<AuthorEntity> authors) {
+        this.authors = authors;
+    }
+
+}

@@ -73,7 +73,7 @@ public class EditorialBooksResource {
      * 
      */
     private List<BookDetailDTO> booksListEntity2DTO(List<BookEntity> entityList) {
-        List<BookDetailDTO> list = new ArrayList<BookDetailDTO>();
+        List<BookDetailDTO> list = new ArrayList<>();
         for (BookEntity entity : entityList) {
             list.add(new BookDetailDTO(entity));
         }

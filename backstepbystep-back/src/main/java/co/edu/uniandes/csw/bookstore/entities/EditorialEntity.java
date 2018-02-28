@@ -30,7 +30,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import uk.co.jemos.podam.common.PodamExclude;
 /**
- * Clase que representa una editorial en la persistencia y permite su serialización.
+ *
  * @author ISIS2603
  */
 @Entity

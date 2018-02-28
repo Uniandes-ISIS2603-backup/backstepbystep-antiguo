@@ -133,7 +133,7 @@ public class EditorialPersistence {
      * @return null si no existe ninguna editorial con el nombre del argumento.
      * Si existe alguna devuelve la primera.
      */
-     public EditorialEntity findByName(String name) {
+    public EditorialEntity findByName(String name) {
         LOGGER.log(Level.INFO, "Consultando editorial por nombre ", name);
 
         // Se crea un query para buscar editoriales con el nombre que recibe el método como argumento. ":name" es un placeholder que debe ser remplazado
@@ -152,6 +152,5 @@ public class EditorialPersistence {
         }
         return result;
     }
-
 
 }

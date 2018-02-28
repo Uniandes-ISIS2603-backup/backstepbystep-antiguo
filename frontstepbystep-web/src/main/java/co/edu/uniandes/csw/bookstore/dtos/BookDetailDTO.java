@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package co.edu.uniandes.csw.bookstore.dtos;
 
+import co.edu.uniandes.csw.bookstore.entities.AuthorEntity;
 import co.edu.uniandes.csw.bookstore.entities.BookEntity;
 import co.edu.uniandes.csw.bookstore.entities.ReviewEntity;
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ import java.util.List;
  *      "image: string,
  *      "description": string,
  *      "publishingdate": date,
- *      "editorial": {@link EditorialDTO}
+ *      "editorial": {@link EditorialDTO},
+ *      "authors": [{@link AuthorDTO}]
  *   }
  * </pre>
  * Por ejemplo un libro se representa asi:<br>
@@ -56,7 +58,14 @@ import java.util.List;
  *      "image: "https://static.iris.net.co/arcadia/upload/images/2017/7/31/64899_1.jpg",
  *      "description": "Jorge Fondebrider traza un mundo fantástico con mapas de la geografía real y de sus mitologías, observando a los hombres lobo que han vivido en la imaginación de Europa y América.",
  *      "publishingdate": "2000-08-20T00:00:00-05:00",
- *      "editorial": {"id" : 1, "name" : "Plaza y Janes"}
+ *      "editorial": {"id" : 1, "name" : "Plaza y Janes"},
+ *      "authors": [
+ *          {
+ *              "id": 1,
+ *              "name: "Gabriel García Márquez",
+ *              "birthDate": "23091935",
+ *              "image": "mifoto.com"
+ *          }
  *   }
  *
  * </pre>
@@ -70,6 +79,9 @@ public class BookDetailDTO extends BookDTO {
     private EditorialDTO editorial;
     // relación  cero o muchos reviews 
     private List<ReviewDTO> reviews;
+
+    // relación  cero o muchos author
+    private List<AuthorDTO> authors;
 
     public BookDetailDTO() {
         super();
@@ -93,7 +105,14 @@ public class BookDetailDTO extends BookDTO {
                 reviews.add(new ReviewDTO(entityReview));
             }
         }
+        if (entity.getAuthors() != null) {
+            authors = new ArrayList<>();
+            for (AuthorEntity entityAuthor : entity.getAuthors()) {
+                authors.add(new AuthorDTO(entityAuthor));
+            }
+        }
     }
+    
     
     /**
      * Transformar el DTO a una entidad
@@ -112,8 +131,14 @@ public class BookDetailDTO extends BookDTO {
             }
             bookE.setReviews(reviewsEntity);
         }
+        if (authors != null) {
+            List<AuthorEntity> authorsEntity = new ArrayList<>();
+            for (AuthorDTO dtoAuthor : authors) {
+                authorsEntity.add(dtoAuthor.toEntity());
+            }
+            bookE.setAuthors(authorsEntity);
+        }
         return bookE;
-
     }
 
     /**
@@ -133,18 +158,34 @@ public class BookDetailDTO extends BookDTO {
     }
 
     /**
-     * Devuelve la editorial asociada a este libro
-     * @return DTO de Editorial
+     * Devuelve los autores del libro
+     * @return DTO de Autores
      */
-    public EditorialDTO getEditorial() {
-        return editorial;
+    public List<AuthorDTO> getAuthors() {
+        return authors;
     }
 
-    /**
+   /**
+    * Modifica los autores del libro
+    * @param authors Lista de autores 
+    */
+    public void setAuthors(List<AuthorDTO> authors) {
+        this.authors = authors;
+    }
+
+     /**
      * Modifica la editorial asociada a este libro.
      * @param editorial the editorial to set
      */
     public void setEditorial(EditorialDTO editorial) {
         this.editorial = editorial;
+    }
+
+    /**
+     * Devuelve la editorial asociada a este libro
+     * @return DTO de Editorial
+     */
+    public EditorialDTO getEditorial() {
+        return editorial;
     }
 }

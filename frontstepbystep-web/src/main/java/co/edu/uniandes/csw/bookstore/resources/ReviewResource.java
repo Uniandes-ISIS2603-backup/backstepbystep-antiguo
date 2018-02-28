@@ -204,7 +204,7 @@ public class ReviewResource {
     }
 
     private List<ReviewDTO> listEntity2DTO(List<ReviewEntity> entityList) {
-        List<ReviewDTO> list = new ArrayList<ReviewDTO>();
+        List<ReviewDTO> list = new ArrayList<>();
         for (ReviewEntity entity : entityList) {
             list.add(new ReviewDTO(entity));
         }

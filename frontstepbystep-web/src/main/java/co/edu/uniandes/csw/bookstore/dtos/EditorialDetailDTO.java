@@ -33,10 +33,6 @@ import java.util.List;
  * los Editorial JSON y otros DTOs. Para conocer el
  * contenido de la una Editorial vaya a la documentacion de {@link EditorialDTO}
  *
- * EditorialDTO Objeto de transferencia de datos de Editoriales. Los DTO contienen las
- * represnetaciones de los JSON que se transfieren entre el cliente y el
- * servidor.
- *
  * Al serializarse como JSON esta clase implementa el siguiente modelo: <br>
  * <pre>
  *   {

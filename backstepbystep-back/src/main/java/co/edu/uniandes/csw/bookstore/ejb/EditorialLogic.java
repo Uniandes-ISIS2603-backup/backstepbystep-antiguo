@@ -61,9 +61,9 @@ public class EditorialLogic {
             throw new BusinessLogicException("Ya existe una Editorial con el nombre \"" + entity.getName() + "\"");
         }
         // Invoca la persistencia para crear la editorial
-        persistence.create(entity);
+
         LOGGER.info("Termina proceso de creación de editorial");
-        return entity;
+        return persistence.create(entity);
     }
 
     /**
@@ -121,7 +121,7 @@ public class EditorialLogic {
      * @param id: id de la editorial a borrar
      * @throws BusinessLogicException Si la editorial a eliminar tiene libros.
      */
-     public void deleteEditorial(Long id) throws BusinessLogicException {
+    public void deleteEditorial(Long id) throws BusinessLogicException {
         LOGGER.log(Level.INFO, "Inicia proceso de borrar editorial con id={0}", id);
         // Note que, por medio de la inyección de dependencias se llama al método "delete(id)" que se encuentra en la persistencia.
         List<BookEntity> books = getBooks(id);
@@ -138,12 +138,12 @@ public class EditorialLogic {
             LOGGER.log(Level.INFO, "Termina proceso de borrar editorial con id={0}", id);
         }
     }
-
     /**
      * Agregar un book a la editorial
      *
      * @param bookId El id libro a guardar
-     * @param editorialId El id de la editorial en la cual se va a guardar el libro.
+     * @param editorialId El id de la editorial en la cual se va a guardar el
+     * libro.
      * @return El libro que fue agregado a la editorial.
      */
     public BookEntity addBook(Long bookId, Long editorialId) {

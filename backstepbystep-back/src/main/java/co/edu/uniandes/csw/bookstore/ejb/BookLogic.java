@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package co.edu.uniandes.csw.bookstore.ejb;
 
+import co.edu.uniandes.csw.bookstore.entities.AuthorEntity;
 import co.edu.uniandes.csw.bookstore.entities.BookEntity;
 import co.edu.uniandes.csw.bookstore.exceptions.BusinessLogicException;
 import co.edu.uniandes.csw.bookstore.persistence.BookPersistence;
@@ -40,7 +41,6 @@ import javax.inject.Inject;
 public class BookLogic {
 
     private static final Logger LOGGER = Logger.getLogger(BookLogic.class.getName());
-
 
     @Inject
     private BookPersistence persistence;
@@ -115,7 +115,90 @@ public class BookLogic {
     }
 
     private boolean validateISBN(String isbn) {
-        return !(isbn == null || isbn.isEmpty());
+        if (isbn == null || isbn.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
+    /**
+     * Obtiene una colección de instancias de AuthorEntity asociadas a una
+     * instancia de Book
+     *
+     * @param bookId Identificador de la instancia de Book
+     * @return Colección de instancias de AuthorEntity asociadas a la instancia
+     * de Book
+     * 
+     */
+    public List<AuthorEntity> listAuthors(Long bookId) {
+        LOGGER.log(Level.INFO, "Inicia proceso de consultar todos los autores del libro con id = {0}", bookId);
+        return getBook(bookId).getAuthors();
+    }
+
+    /**
+     * Obtiene una instancia de AuthorEntity asociada a una instancia de Book
+     *
+     * @param bookId Identificador de la instancia de Book
+     * @param authorsId Identificador de la instancia de Author
+     * @return La entidad del Autor asociada al libro
+     */
+    public AuthorEntity getAuthor(Long bookId, Long authorsId) {
+        LOGGER.log(Level.INFO, "Inicia proceso de consultar un autor del libro con id = {0}", bookId);
+        List<AuthorEntity> list = getBook(bookId).getAuthors();
+        AuthorEntity authorsEntity = new AuthorEntity();
+        authorsEntity.setId(authorsId);
+        int index = list.indexOf(authorsEntity);
+        if (index >= 0) {
+            return list.get(index);
+        }
+        return null;
+    }
+
+    /**
+     * Asocia un Author existente a un Book
+     *
+     * @param bookId Identificador de la instancia de Book
+     * @param authorsId Identificador de la instancia de Author
+     * @return Instancia de AuthorEntity que fue asociada a Book
+     * 
+     */
+    public AuthorEntity addAuthor(Long bookId, Long authorsId) {
+        LOGGER.log(Level.INFO, "Inicia proceso de asociar un autor al libro con id = {0}", bookId);
+        BookEntity bookEntity = getBook(bookId);
+        AuthorEntity authorsEntity = new AuthorEntity();
+        authorsEntity.setId(authorsId);
+        bookEntity.getAuthors().add(authorsEntity);
+        return getAuthor(bookId, authorsId);
+    }
+
+    /**
+     * Remplaza las instancias de Author asociadas a una instancia de Book
+     *
+     * @param bookId Identificador de la instancia de Book
+     * @param list Colección de instancias de AuthorEntity a asociar a instancia
+     * de Book
+     * @return Nueva colección de AuthorEntity asociada a la instancia de Book
+     * 
+     */
+    public List<AuthorEntity> replaceAuthors(Long bookId, List<AuthorEntity> list) {
+        LOGGER.log(Level.INFO, "Inicia proceso de reemplazar un autor del libro con id = {0}", bookId);
+        BookEntity bookEntity = getBook(bookId);
+        bookEntity.setAuthors(list);
+        return bookEntity.getAuthors();
+    }
+
+    /**
+     * Desasocia un Author existente de un Book existente
+     *
+     * @param bookId Identificador de la instancia de Book
+     * @param authorsId Identificador de la instancia de Author
+     * 
+     */
+    public void removeAuthor(Long bookId, Long authorsId) {
+        LOGGER.log(Level.INFO, "Inicia proceso de borrar un autor del libro con id = {0}", bookId);
+        BookEntity entity = getBook(bookId);
+        AuthorEntity authorsEntity = new AuthorEntity();
+        authorsEntity.setId(authorsId);
+        entity.getAuthors().remove(authorsEntity);
+    }
 }

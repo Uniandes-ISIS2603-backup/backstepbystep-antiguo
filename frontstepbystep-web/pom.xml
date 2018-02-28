@@ -5,7 +5,7 @@
     <parent>
         <groupId>co.edu.uniandes.csw</groupId>
         <artifactId>backstepbystep</artifactId>
-        <version>4.0</version>
+        <version>5.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>frontstepbystep-web</artifactId>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>co.edu.uniandes.csw</groupId>
             <artifactId>backstepbystep-back</artifactId>
-            <version>4.0</version>
+            <version>5.0</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
