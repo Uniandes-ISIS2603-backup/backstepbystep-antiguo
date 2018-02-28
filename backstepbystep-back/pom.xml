@@ -4,13 +4,12 @@
     <parent>
         <groupId>co.edu.uniandes.csw</groupId>
         <artifactId>backstepbystep</artifactId>
-        <version>2.0</version>
+        <version>3.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>backstepbystep-back</artifactId>
     <packaging>jar</packaging>
-    <name>backstepbystep-back</name>
-	
+  <name>backstepbystep-back</name>
     <dependencies>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -18,11 +17,58 @@
             <version>2.6.2</version>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.main.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>4.1</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-core</artifactId>
+         
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-api</artifactId>
+         
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>uk.co.jemos.podam</groupId>
+            <artifactId>podam</artifactId>
+            <version>6.0.2.RELEASE</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+           
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+           
+            <type>jar</type>
+        </dependency>
+        
     </dependencies>
     <build>
         <plugins>

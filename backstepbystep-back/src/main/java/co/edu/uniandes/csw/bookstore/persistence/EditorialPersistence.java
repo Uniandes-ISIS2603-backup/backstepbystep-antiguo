@@ -34,7 +34,7 @@ import javax.persistence.TypedQuery;
 
 /**
  * Clase que maneja la persistencia para Editorial.
- * Se conecta a través Entity Manager de javax.persistance con la base de datos
+ * Se conecta a través del Entity Manager de javax.persistance con la base de datos
  * SQL.
  * @author ISIS2603
  */
@@ -85,13 +85,15 @@ public class EditorialPersistence {
      * @param id: id correspondiente a la editorial a borrar.
      */
     public void delete(Long id) {
+
         LOGGER.log(Level.INFO, "Borrando editorial con id={0}", id);
         // Se hace uso de mismo método que esta explicado en public EditorialEntity find(Long id) para obtener la editorial a borrar.
         EditorialEntity entity = em.find(EditorialEntity.class, id);
         /* Note que una vez obtenido el objeto desde la base de datos llamado "entity", volvemos hacer uso de un método propio del
-         EntityManager para eliminar de la base de datos el objeto que encontramos y queremos borrar.
-         Es similar a "delete from EditorialEntity where id=id;" - "DELETE FROM table_name WHERE condition;" en SQL.*/
+        EntityManager para eliminar de la base de datos el objeto que encontramos y queremos borrar.
+        Es similar a "delete from EditorialEntity where id=id;" - "DELETE FROM table_name WHERE condition;" en SQL.*/
         em.remove(entity);
+
     }
 
     /**

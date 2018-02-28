@@ -69,7 +69,7 @@ public class BookStoreIT {
     public void postman() throws IOException {
 
         PostmanTestBuilder tp = new PostmanTestBuilder();
-        tp.setTestWithoutLogin("backstepbystep-paso2.postman_collection");
+        tp.setTestWithoutLogin("backstepbystep-paso3.postman_collection");
         String desiredResult = "0";
         if (tp.getAssertions_failed() != null) {
             Assert.assertEquals(desiredResult, tp.getAssertions_failed());

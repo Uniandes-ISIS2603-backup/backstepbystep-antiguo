@@ -20,10 +20,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
+*/
 package co.edu.uniandes.csw.bookstore.test.logic;
 
 import co.edu.uniandes.csw.bookstore.ejb.EditorialLogic;
+import co.edu.uniandes.csw.bookstore.entities.BookEntity;
 import co.edu.uniandes.csw.bookstore.entities.EditorialEntity;
 import co.edu.uniandes.csw.bookstore.exceptions.BusinessLogicException;
 import co.edu.uniandes.csw.bookstore.persistence.EditorialPersistence;
@@ -65,6 +66,8 @@ public class EditorialLogicTest {
 
     private List<EditorialEntity> data = new ArrayList<EditorialEntity>();
 
+    private List<BookEntity> booksData = new ArrayList();
+
     @Deployment
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
@@ -101,6 +104,7 @@ public class EditorialLogicTest {
      *
      */
     private void clearData() {
+        em.createQuery("delete from BookEntity").executeUpdate();
         em.createQuery("delete from EditorialEntity").executeUpdate();
     }
 
@@ -111,11 +115,17 @@ public class EditorialLogicTest {
      */
     private void insertData() {
         for (int i = 0; i < 3; i++) {
+            BookEntity books = factory.manufacturePojo(BookEntity.class);
+            em.persist(books);
+            booksData.add(books);
+        }
+        for (int i = 0; i < 3; i++) {
             EditorialEntity entity = factory.manufacturePojo(EditorialEntity.class);
-
             em.persist(entity);
             data.add(entity);
-
+            if (i == 0) {
+                booksData.get(i).setEditorial(entity);
+            }
         }
     }
 
@@ -137,6 +147,7 @@ public class EditorialLogicTest {
     /**
      * Prueba para consultar la lista de Editorials
      *
+     * 
      */
     @Test
     public void getEditorialsTest() {
@@ -156,6 +167,7 @@ public class EditorialLogicTest {
     /**
      * Prueba para consultar un Editorial
      *
+     * 
      */
     @Test
     public void getEditorialTest() {
@@ -169,10 +181,12 @@ public class EditorialLogicTest {
     /**
      * Prueba para eliminar un Editorial
      *
+     * 
      */
     @Test
-    public void deleteEditorialTest() {
+    public void deleteEditorialTest() throws BusinessLogicException {
         EditorialEntity entity = data.get(0);
+        editorialLogic.removeBook(booksData.get(0).getId(), entity.getId());
         editorialLogic.deleteEditorial(entity.getId());
         EditorialEntity deleted = em.find(EditorialEntity.class, entity.getId());
         Assert.assertNull(deleted);
@@ -181,6 +195,7 @@ public class EditorialLogicTest {
     /**
      * Prueba para actualizar un Editorial
      *
+     * 
      */
     @Test
     public void updateEditorialTest() {
@@ -197,4 +212,82 @@ public class EditorialLogicTest {
         Assert.assertEquals(pojoEntity.getName(), resp.getName());
     }
 
+    /**
+     * Prueba para obtener una instancia de Books asociada a una instancia
+     * Editorial
+     *
+     * 
+     */
+    @Test
+    public void getBooksTest() throws BusinessLogicException {
+        EditorialEntity entity = data.get(0);
+        BookEntity bookEntity = booksData.get(0);
+        BookEntity response = editorialLogic.getBook(entity.getId(), bookEntity.getId());
+
+        Assert.assertEquals(bookEntity.getId(), response.getId());
+        Assert.assertEquals(bookEntity.getName(), response.getName());
+        Assert.assertEquals(bookEntity.getDescription(), response.getDescription());
+        Assert.assertEquals(bookEntity.getIsbn(), response.getIsbn());
+        Assert.assertEquals(bookEntity.getImage(), response.getImage());
+    }
+
+    /**
+     * Prueba para obtener una colección de instancias de Books asociadas a una
+     * instancia Editorial
+     *
+     * 
+     */
+    @Test
+    public void listBooksTest() {
+        List<BookEntity> list = editorialLogic.listBooks(data.get(0).getId());
+        Assert.assertEquals(1, list.size());
+    }
+
+    /**
+     * Prueba para asociar un Books existente a un Editorial
+     *
+     * 
+     */
+    @Test
+    public void addBooksTest() {
+        EditorialEntity entity = data.get(0);
+        BookEntity bookEntity = booksData.get(1);
+        BookEntity response = editorialLogic.addBook(bookEntity.getId(), entity.getId());
+
+        Assert.assertNotNull(response);
+        Assert.assertEquals(bookEntity.getId(), response.getId());
+    }
+
+    /**
+     * Prueba para remplazar las instancias de Books asociadas a una instancia
+     * de Editorial
+     *
+     * 
+     */
+    @Test
+    public void replaceBooksTest() {
+        EditorialEntity entity = data.get(0);
+        List<BookEntity> list = booksData.subList(1, 3);
+        editorialLogic.replaceBooks(entity.getId(), list);
+
+        entity = editorialLogic.getEditorial(entity.getId());
+        Assert.assertFalse(entity.getBooks().contains(booksData.get(0)));
+        Assert.assertTrue(entity.getBooks().contains(booksData.get(1)));
+        Assert.assertTrue(entity.getBooks().contains(booksData.get(2)));
+    }
+
+    /**
+     * Prueba para desasociar un Book existente de un Editorial existente
+     *
+     * 
+     */
+    @Test
+    public void removeBooksTest() throws BusinessLogicException {
+        try {
+            editorialLogic.removeBook(data.get(0).getId(), booksData.get(0).getId());
+            BookEntity response = editorialLogic.getBook(data.get(0).getId(), booksData.get(0).getId());
+        } catch (BusinessLogicException e) {
+        }
+
+    }
 }

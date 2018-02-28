@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package co.edu.uniandes.csw.bookstore.ejb;
 
+import co.edu.uniandes.csw.bookstore.entities.BookEntity;
 import co.edu.uniandes.csw.bookstore.entities.EditorialEntity;
 import co.edu.uniandes.csw.bookstore.exceptions.BusinessLogicException;
 import co.edu.uniandes.csw.bookstore.persistence.EditorialPersistence;
@@ -44,6 +45,9 @@ public class EditorialLogic {
     @Inject
     private EditorialPersistence persistence; // Variable para acceder a la persistencia de la aplicación. Es una inyección de dependencias.
 
+    @Inject
+    private BookLogic bookLogic;
+
     /**
      * Crea una editorial en la persistencia.
      * @param entity La entidad que representa la editorial a persistir.
@@ -63,7 +67,7 @@ public class EditorialLogic {
     }
 
     /**
-     * 
+     *
      * Obtener todas las editoriales existentes en la base de datos.
      *
      * @return una lista de editoriales.
@@ -79,7 +83,7 @@ public class EditorialLogic {
     /**
      *
      * Obtener una editorial por medio de su id.
-     * 
+     *
      * @param id: id de la editorial para ser buscada.
      * @return la editorial solicitada por medio de su id.
      */
@@ -115,12 +119,113 @@ public class EditorialLogic {
      * Borrar un editorial
      *
      * @param id: id de la editorial a borrar
+     * @throws BusinessLogicException Si la editorial a eliminar tiene libros.
      */
-    public void deleteEditorial(Long id) {
+    public void deleteEditorial(Long id) throws BusinessLogicException {
         LOGGER.log(Level.INFO, "Inicia proceso de borrar editorial con id={0}", id);
         // Note que, por medio de la inyección de dependencias se llama al método "delete(id)" que se encuentra en la persistencia.
-        persistence.delete(id);
-        LOGGER.log(Level.INFO, "Termina proceso de borrar editorial con id={0}", id);
+        List<BookEntity> books = getBooks(id);
+        if (books == null) {
+            persistence.delete(id);
+
+        } else {
+            if (books.isEmpty()) {
+                persistence.delete(id);
+            } else {
+                throw new BusinessLogicException("No se puede borrar la editorial con id " + id + " porque tiene books asociados");
+            }
+
+            LOGGER.log(Level.INFO, "Termina proceso de borrar editorial con id={0}", id);
+        }
+    }
+
+    /**
+     * Agregar un book a la editorial
+     *
+     * @param bookId El id libro a guardar
+     * @param editorialId El id de la editorial en la cual se va a guardar el libro.
+     * @return 
+     */
+    public BookEntity addBook(Long bookId, Long editorialId) {
+        EditorialEntity editorialEntity = getEditorial(editorialId);
+        BookEntity bookEntity = bookLogic.getBook(bookId);
+        bookEntity.setEditorial(editorialEntity);
+        return bookEntity;
+    }
+
+    /**
+     * Borrar un book de una editorial
+     *
+     * @param bookId El libro que se desea borrar de la editorial.
+     * @param editorialId La editorial de la cual se desea eliminar.
+     */
+    public void removeBook(Long bookId, Long editorialId) {
+        EditorialEntity editorialEntity = getEditorial(editorialId);
+        BookEntity book = bookLogic.getBook(bookId);
+        book.setEditorial(null);
+        editorialEntity.getBooks().remove(book);
+    }
+
+    /**
+     * Remplazar books de una editorial
+     *
+     * @param books Lista de libros que serán los de la editorial.
+     * @param editorialId El id de la editorial que se quiere actualizar.
+     * @return La lista de libros actualizada.
+     */
+    public List<BookEntity> replaceBooks(Long editorialId, List<BookEntity> books) {
+        EditorialEntity editorial = getEditorial(editorialId);
+        List<BookEntity> bookList = bookLogic.getBooks();
+        for (BookEntity book : bookList) {
+            if (books.contains(book)) {
+                book.setEditorial(editorial);
+            } else if (book.getEditorial() != null && book.getEditorial().equals(editorial)) {
+                book.setEditorial(null);
+            }
+        }
+        return books;
+    }
+
+    /**
+     * Retorna todos los books asociados a una editorial
+     *
+     * @param editorialId El ID de la editorial buscada
+     * @return La lista de libros de la editorial
+     */
+    public List<BookEntity> getBooks(Long editorialId) {
+        return getEditorial(editorialId).getBooks();
+    }
+
+    /**
+     * Retorna un book asociado a una editorial
+     *
+     * @param editorialId El id de la editorial a buscar.
+     * @param bookId El id del libro a buscar
+     * @return El libro encontrado dentro de la editorial.
+     * @throws BusinessLogicException Si el libro no se encuentra en la editorial
+     */
+    public BookEntity getBook(Long editorialId, Long bookId) throws BusinessLogicException {
+        List<BookEntity> books = getEditorial(editorialId).getBooks();
+        BookEntity book = bookLogic.getBook(bookId);
+        int index = books.indexOf(book);
+        if (index >= 0) {
+            return books.get(index);
+        }
+        throw new BusinessLogicException("El libro no está asociado a la editorial");
+
+    }
+
+    /**
+     * Obtiene una colección de instancias de BookEntity asociadas a una
+     * instancia de Editorial
+     *
+     * @param editorialId Identificador de la instancia de Editorial
+     * @return Colección de instancias de BookEntity asociadas a la instancia de
+     * Editorial
+     *
+     */
+    public List<BookEntity> listBooks(Long editorialId) {
+        return getEditorial(editorialId).getBooks();
     }
 
 }

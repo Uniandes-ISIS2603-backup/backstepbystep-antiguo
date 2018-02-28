@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  * Convertidor de Excepciones WebApplicationExceptionMapper a mensajes REST.
- * 
+ *
  * El error se transforma bajo el siguiente modelo:
  * Codigo de respuesta: <code style="color: #c7254e; background-color: #f9f2f4;">Codigo de exepcion de javax</code>
  * Respuesta: La razon del error
@@ -50,7 +50,7 @@ public class WebApplicationExceptionMapper implements ExceptionMapper<WebApplica
      */
     @Override
     public Response toResponse(WebApplicationException exception) {
-
+        
         return Response.status(exception.getResponse().getStatus())// Se recibe el status
                 .entity(getInitCause(exception).getLocalizedMessage())// Se envía la causa
                 .type(MediaType.TEXT_PLAIN_TYPE)
